@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Lirisense - Админ-панель{% endblock %}
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <h1 class="page-title">Админ-панель</h1>
+
+        <div class="admin-stats">
+            <div class="admin-stat">
+                <span class="admin-stat-num">{{ total }}</span>
+                <span class="admin-stat-label">Всего</span>
+            </div>
+            <div class="admin-stat">
+                <span class="admin-stat-num admin-stat-banned">{{ banned }}</span>
+                <span class="admin-stat-label">Забанено</span>
+            </div>
+            <div class="admin-stat">
+                <span class="admin-stat-num admin-stat-active">{{ active }}</span>
+                <span class="admin-stat-label">Активных</span>
+            </div>
+        </div>
+
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Логин</th>
+                        <th>Статус</th>
+                        <th>Роль</th>
+                        <th>HWID</th>
+                        <th>Создан</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                    <tr class="{% if u.is_banned %}row-banned{% endif %}">
+                        <td>{{ u.id }}</td>
+                        <td><strong>{{ u.login }}</strong></td>
+                        <td>
+                            <span class="badge {% if u.is_banned %}badge-danger{% else %}badge-success{% endif %}">
+                                {% if u.is_banned %}БАН{% else %}ОК{% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge {% if u.is_admin %}badge-admin{% else %}badge-user{% endif %}">
+                                {% if u.is_admin %}АДМИН{% else %}ЮЗЕР{% endif %}
+                            </span>
+                        </td>
+                        <td class="hwid-cell">{{ u.hwid[:16]~'...' if u.hwid else '-' }}</td>
+                        <td>{{ u.created_at.strftime('%d.%m.%y') }}</td>
+                        <td class="actions-cell">
+                            {% if u.id != current_user.id %}
+                                {% if u.is_banned %}
+                                <a href="/admin/unban/{{ u.id }}" class="btn btn-small btn-success" title="Разбан">Разбан</a>
+                                {% else %}
+                                <a href="/admin/ban/{{ u.id }}" class="btn btn-small btn-danger" title="Бан">Бан</a>
+                                {% endif %}
+                                <a href="/admin/setadmin/{{ u.id }}" class="btn btn-small btn-warning" title="Админ">
+                                    {% if u.is_admin %}-Админ{% else %}+Админ{% endif %}
+                                </a>
+                                <a href="/admin/delete/{{ u.id }}" class="btn btn-small btn-danger-outline"
+                                   onclick="return confirm('Удалить {{ u.login }}?')" title="Удалить">X</a>
+                            {% else %}
+                                <span class="text-muted">Вы</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="admin-upload">
+            <h3>Файл лоудера</h3>
+            {% if has_file %}
+            <div class="upload-status">
+                <span class="badge badge-success">Загружен</span>
+                <a href="/admin/delete-file" class="btn btn-small btn-danger"
+                   onclick="return confirm('Удалить файл?')">Удалить</a>
+            </div>
+            {% else %}
+            <div class="upload-status">
+                <span class="badge badge-danger">Не загружен</span>
+            </div>
+            {% endif %}
+            <form method="POST" action="/admin/upload" enctype="multipart/form-data" class="upload-form">
+                <input type="file" name="file" accept=".exe" required>
+                <button type="submit" class="btn btn-primary btn-small">{% if has_file %}Заменить{% else %}Загрузить{% endif %}</button>
+            </form>
+        </div>
+
+        <a href="/profile" class="btn btn-secondary" style="margin-top:20px">Назад</a>
+    </div>
+</section>
+{% endblock %}

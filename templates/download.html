@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Lirisense - Скачать{% endblock %}
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <h1 class="page-title">Скачать Lirisense</h1>
+
+        <div class="download-card">
+            <div class="download-info">
+                <div class="download-icon">&#128190;</div>
+                <div>
+                    <h2>Lirisense Loader</h2>
+                    <p>Последняя версия | .exe | Windows 10/11</p>
+                </div>
+            </div>
+
+            {% if current_user.is_authenticated %}
+                {% if current_user.is_banned %}
+                <div class="download-banned">
+                    <p>Ваш аккаунт заблокирован. Загрузка недоступна.</p>
+                </div>
+                {% elif has_file %}
+                <a href="/download/file" class="btn btn-primary btn-lg">Скачать .exe</a>
+                {% else %}
+                <div class="download-banned">
+                    <p>Файл загрузки пока не добавлен администратором.</p>
+                </div>
+                {% endif %}
+            {% else %}
+                <div class="download-auth">
+                    <p>Войдите в аккаунт чтобы скачать</p>
+                    <div class="download-buttons">
+                        <a href="/login" class="btn btn-primary">Войти</a>
+                        <a href="/register" class="btn btn-outline">Регистрация</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="requirements">
+            <h3>Требования</h3>
+            <ul>
+                <li>Windows 10/11 (x64)</li>
+                <li>.NET Framework 4.6.1</li>
+                <li>CS2 запущен</li>
+                <li>Отсутствие отладчиков (IDA, x64dbg и др.)</li>
+            </ul>
+        </div>
+
+        <div class="install-steps">
+            <h3>Как установить</h3>
+            <div class="steps">
+                <div class="step">
+                    <span class="step-num">1</span>
+                    <p>Зарегистрируйтесь на сайте</p>
+                </div>
+                <div class="step">
+                    <span class="step-num">2</span>
+                    <p>Скачайте .exe файл</p>
+                </div>
+                <div class="step">
+                    <span class="step-num">3</span>
+                    <p>Запустите CS2</p>
+                </div>
+                <div class="step">
+                    <span class="step-num">4</span>
+                    <p>Запустите лоудер и войдите</p>
+                </div>
+                <div class="step">
+                    <span class="step-num">5</span>
+                    <p>Нажмите Load и играйте</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Lirisense - О проекте{% endblock %}
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <h1 class="page-title">О проекте</h1>
+
+        <div class="about-content">
+            <div class="about-block">
+                <h2>Что такое Lirisense?</h2>
+                <p>Lirisense — это CS2 cheat loader, разработанный для образовательных целей. Проект представляет собой инжекторDLL-файлов в процесс Counter-Strike 2.</p>
+            </div>
+
+            <div class="about-block">
+                <h2>Как это работает?</h2>
+                <div class="about-list">
+                    <div class="about-item">
+                        <h3>1. Авторизация</h3>
+                        <p>Пользователь вводит логин и пароль. Лоудер проверяет данные через API сервера.</p>
+                    </div>
+                    <div class="about-item">
+                        <h3>2. Поиск процесса</h3>
+                        <p>Loader ищет запущенный процесс CS2 и получает к нему доступ.</p>
+                    </div>
+                    <div class="about-item">
+                        <h3>3. Скачивание DLL</h3>
+                        <p>DLL-файл загружается с Google Drive в защищённой среде.</p>
+                    </div>
+                    <div class="about-item">
+                        <h3>4. Инжекция</h3>
+                        <p>Используется LoadLibrary или Manual Map для загрузки DLL в процесс.</p>
+                    </div>
+                    <div class="about-item">
+                        <h3>5. Очистка</h3>
+                        <p>DLL-файл автоматически удаляется после инжекции.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-block">
+                <h2>Методы инжекции</h2>
+                <div class="methods-grid">
+                    <div class="method-card">
+                        <h3>LoadLibrary</h3>
+                        <p>Классический метод. Создаёт удалённый поток и вызывает LoadLibraryW. Простой и надёжный.</p>
+                        <span class="method-badge">Стандартный</span>
+                    </div>
+                    <div class="method-card">
+                        <h3>Manual Map</h3>
+                        <p>Продвинутый метод. Ручной маппинг PE-секций, обработка релокаций и импорт-таблиц. Сложнее для детекции.</p>
+                        <span class="method-badge advanced">Продвинутый</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-block">
+                <h2>Безопасность</h2>
+                <div class="security-grid">
+                    <div class="security-item">
+                        <h3>HWID привязка</h3>
+                        <p>Аккаунт привязан к аппаратному идентификатору вашего ПК</p>
+                    </div>
+                    <div class="security-item">
+                        <h3>Анти-отладка</h3>
+                        <p>Автоматическое закрытие при обнаружении отладчиков (IDA, x64dbg, ProcessHacker)</p>
+                    </div>
+                    <div class="security-item">
+                        <h3>Случайные имена</h3>
+                        <p>Окна получают случайные имена для маскировки</p>
+                    </div>
+                    <div class="security-item">
+                        <h3>Автоочистка</h3>
+                        <p>DLL-файл удаляется сразу после инжекции</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-block">
+                <h2>Технологии</h2>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <span class="tech-name">C#</span>
+                        <span class="tech-desc">.NET Framework 4.6.1</span>
+                    </div>
+                    <div class="tech-item">
+                        <span class="tech-name">Python</span>
+                        <span class="tech-desc">Flask API сервер</span>
+                    </div>
+                    <div class="tech-item">
+                        <span class="tech-name">SQLite</span>
+                        <span class="tech-desc">База данных</span>
+                    </div>
+                    <div class="tech-item">
+                        <span class="tech-name">Win32 API</span>
+                        <span class="tech-desc">Инжекция процессов</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-block disclaimer">
+                <h2>Дисклеймер</h2>
+                <p>Данный проект создан исключительно в образовательных целях. Автор не несёт ответственности за любые повреждения или убытки, возникшие в результате использования данного чит-лоудера. Используйте на свой страх и риск.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

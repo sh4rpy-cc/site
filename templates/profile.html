@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Lirisense - Профиль{% endblock %}
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <h1 class="page-title">Мой профиль</h1>
+
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar">{{ user.login[0]|upper }}</div>
+                <div class="profile-info">
+                    <h2>{{ user.login }}</h2>
+                    <span class="profile-role {% if user.is_admin %}role-admin{% else %}role-user{% endif %}">
+                        {% if user.is_admin %}Администратор{% else %}Пользователь{% endif %}
+                    </span>
+                </div>
+            </div>
+
+            <div class="profile-details">
+                <div class="detail-row">
+                    <span class="detail-label">Статус</span>
+                    <span class="detail-value {% if user.is_banned %}status-banned{% else %}status-active{% endif %}">
+                        {% if user.is_banned %}Заблокирован{% else %}Активен{% endif %}
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">HWID</span>
+                    <span class="detail-value detail-small">{{ user.hwid or 'Не привязан' }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Регистрация</span>
+                    <span class="detail-value">{{ user.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Последний вход</span>
+                    <span class="detail-value">{{ user.last_login.strftime('%d.%m.%Y %H:%M') if user.last_login else 'N/A' }}</span>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                {% if current_user.is_admin %}
+                <a href="/admin" class="btn btn-warning">Админ-панель</a>
+                {% endif %}
+                <a href="/download" class="btn btn-primary">Скачать</a>
+                <a href="/logout" class="btn btn-secondary">Выйти</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
