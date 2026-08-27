@@ -6,7 +6,7 @@ from datetime import datetime
 import os
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = SECRET_KEY
+app.config["SECRET_KEY"] = a323btj97i6use2arch25btw
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
