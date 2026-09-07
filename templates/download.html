@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Скачать — liratine.tg{% endblock %}
+{% block content %}
+<section class="page-section">
+    <h1 class="page-title">Скачать</h1>
+
+    <div class="download-card">
+        <div class="download-icon">📦</div>
+        <h2>liratine.tg.exe</h2>
+        <p>Последняя версия лоадера для CS2</p>
+
+        {% if current_user.is_authenticated %}
+            {% if current_user.is_banned %}
+                <div class="download-banned">Ваш аккаунт заблокирован. Скачивание недоступно.</div>
+            {% elif has_file %}
+                <a href="/download/file" class="btn btn-primary btn-full">Скачать</a>
+            {% else %}
+                <p style="color:var(--text-dim);font-size:13px">Файл пока не загружен</p>
+            {% endif %}
+        {% else %}
+            <div class="download-auth">
+                <p>Войдите или зарегистрируйтесь для скачивания</p>
+                <div class="download-buttons">
+                    <a href="/login" class="btn btn-primary">Войти</a>
+                    <a href="/register" class="btn btn-outline">Регистрация</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="requirements">
+        <h3>Системные требования</h3>
+        <ul>
+            <li>Windows 10/11 64-bit</li>
+            <li>Counter-Strike 2 установлен</li>
+            <li>Антивирус выключен (или добавьте исключение)</li>
+        </ul>
+    </div>
+
+    <div class="install-steps">
+        <h3>Установка</h3>
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <p>Скачайте liratine.tg.exe</p>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <p>Запустите от имени администратора</p>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <p>Войдите в свой аккаунт в лоадере</p>
+            </div>
+            <div class="step">
+                <div class="step-num">4</div>
+                <p>Нажмите «Inject» и запустите CS2</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

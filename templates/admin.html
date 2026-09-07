@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+{% block title %}Админ-панель — liratine.tg{% endblock %}
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <h1 class="page-title">Админ-панель</h1>
+
+        <div class="admin-stats">
+            <div class="admin-stat">
+                <span class="admin-stat-num accent">{{ total }}</span>
+                <span class="admin-stat-label">Всего</span>
+            </div>
+            <div class="admin-stat">
+                <span class="admin-stat-num success">{{ active }}</span>
+                <span class="admin-stat-label">Активных</span>
+            </div>
+            <div class="admin-stat">
+                <span class="admin-stat-num danger">{{ banned }}</span>
+                <span class="admin-stat-label">Забанено</span>
+            </div>
+            <div class="admin-stat">
+                <span class="admin-stat-num danger">{{ hwid_banned }}</span>
+                <span class="admin-stat-label">HWID Бан</span>
+            </div>
+            <div class="admin-stat">
+                <span class="admin-stat-num warning">{{ expired }}</span>
+                <span class="admin-stat-label">Без подписки</span>
+            </div>
+            <div class="admin-stat">
+                <span class="admin-stat-num warning">{{ invites|length }}</span>
+                <span class="admin-stat-label">Инвайтов</span>
+            </div>
+        </div>
+
+        <div class="admin-panel">
+            <h3>Лицензионные ключи</h3>
+            <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center">
+                <form method="POST" action="/admin/key/generate" style="display:flex;gap:8px;align-items:center">
+                    <select name="count" style="padding:8px 12px;background:var(--bg-hover);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:inherit">
+                        <option value="1">1 шт.</option>
+                        <option value="5">5 шт.</option>
+                        <option value="10">10 шт.</option>
+                        <option value="25">25 шт.</option>
+                    </select>
+                    <select name="days" style="padding:8px 12px;background:var(--bg-hover);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:inherit">
+                        <option value="7">7 дней</option>
+                        <option value="14">14 дней</option>
+                        <option value="30" selected>30 дней</option>
+                        <option value="90">90 дней</option>
+                        <option value="180">180 дней</option>
+                        <option value="365">365 дней</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary btn-sm">Генерировать</button>
+                </form>
+                <span style="font-size:13px;color:var(--text-muted)">Свободно: {{ keys_free }} / Использовано: {{ keys_used }}</span>
+            </div>
+
+            {% if keys %}
+            <div class="invite-list">
+                {% for lk in keys %}
+                <div class="invite-item">
+                    <div>
+                        <div class="invite-code">{{ lk.key }}</div>
+                        <div class="invite-meta">{{ lk.days }} дн. | {{ lk.created_at.strftime('%d.%m.%Y %H:%M') }}{% if lk.assigned_to %} | Активировал: {% for u in users if u.id == lk.assigned_to %}{{ u.login }}{% endfor %}{% endif %}</div>
+                    </div>
+                    {% if lk.is_used %}
+                        <span class="invite-status invite-used">Использован</span>
+                    {% else %}
+                        <div style="display:flex;gap:6px;align-items:center">
+                            <span class="invite-status invite-free">Свободен</span>
+                            <form method="POST" action="/admin/key/delete/{{ lk.id }}" style="margin:0">
+                                <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="invite-empty">Лицензионных ключей пока нет</p>
+            {% endif %}
+        </div>
+
+        <div class="admin-panel">
+            <h3>Инвайт-коды</h3>
+            <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap">
+                <form method="POST" action="/admin/invite/generate" style="display:flex;gap:8px;align-items:center">
+                    <select name="count" style="padding:8px 12px;background:var(--bg-hover);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:inherit">
+                        <option value="1">1 шт.</option>
+                        <option value="5">5 шт.</option>
+                        <option value="10">10 шт.</option>
+                        <option value="25">25 шт.</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary btn-sm">Генерировать</button>
+                </form>
+            </div>
+
+            {% if invites %}
+            <div class="invite-list">
+                {% for inv in invites %}
+                <div class="invite-item">
+                    <div>
+                        <div class="invite-code">{{ inv.code }}</div>
+                        <div class="invite-meta">{{ inv.created_at.strftime('%d.%m.%Y %H:%M') }}</div>
+                    </div>
+                    {% if inv.used_by %}
+                        <span class="invite-status invite-used">Использован</span>
+                    {% else %}
+                        <div style="display:flex;gap:6px;align-items:center">
+                            <span class="invite-status invite-free">Свободен</span>
+                            <form method="POST" action="/admin/invite/delete/{{ inv.id }}" style="margin:0">
+                                <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="invite-empty">Инвайт-кодов пока нет</p>
+            {% endif %}
+        </div>
+
+        <div class="admin-panel">
+            <h3>Пользователи</h3>
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Логин</th>
+                            <th>Роль</th>
+                            <th>HWID</th>
+                            <th>Подписка</th>
+                            <th>HWID Бан</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in users %}
+                        <tr {{ 'class="row-banned"' if u.is_banned }}>
+                            <td>{{ u.id }}</td>
+                            <td>{{ u.login }}</td>
+                            <td>
+                                <span class="badge {{ 'badge-admin' if u.is_admin else 'badge-user' }}">
+                                    {{ 'Admin' if u.is_admin else 'User' }}
+                                </span>
+                            </td>
+                            <td class="hwid-cell" style="max-width:140px;overflow:hidden;text-overflow:ellipsis;font-size:11px">{{ u.hwid or '—' }}</td>
+                            <td>
+                                {% if u.is_admin %}
+                                    <span class="badge badge-admin">∞</span>
+                                {% elif u.subscription_expires %}
+                                    {% if u.has_active_subscription() %}
+                                        <span class="badge badge-success">{{ u.subscription_expires.strftime('%d.%m.%Y') }} ({{ u.subscription_days_left() }}д)</span>
+                                    {% else %}
+                                        <span class="badge badge-danger">Истёк {{ u.subscription_expires.strftime('%d.%m.%Y') }}</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="badge badge-warning">Нет</span>
+                                {% endif %}
+                                <form method="POST" action="/admin/subscription/{{ u.id }}" style="display:inline-flex;gap:4px;margin-left:6px;align-items:center">
+                                    <input type="number" name="days" min="1" max="36500" value="30" style="width:52px;padding:3px 6px;background:var(--bg-hover);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:11px;font-family:inherit">
+                                    <button type="submit" class="btn btn-primary btn-sm" style="padding:3px 8px;font-size:11px">+дн</button>
+                                </form>
+                                <form method="POST" action="/admin/subscription/{{ u.id }}" style="display:inline;margin-left:2px">
+                                    <input type="hidden" name="days" value="0">
+                                    <button type="submit" class="btn btn-danger btn-sm" style="padding:3px 8px;font-size:11px" onclick="return confirm('Сбросить подписку?')">Сброс</button>
+                                </form>
+                            </td>
+                            <td>
+                                {% if u.hwid_banned %}
+                                    <span class="badge badge-danger">HWID БАН</span>
+                                {% else %}
+                                    <span class="badge badge-success">OK</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge {{ 'badge-danger' if u.is_banned else 'badge-success' }}">
+                                    {{ 'Banned' if u.is_banned else 'Active' }}
+                                </span>
+                            </td>
+                            <td class="actions-cell" style="white-space:nowrap">
+                                {% if u.id != current_user.id %}
+                                    {% if u.is_banned %}
+                                        <form method="POST" action="/admin/unban/{{ u.id }}" style="display:inline"><button type="submit" class="btn btn-success btn-sm">Разбан</button></form>
+                                    {% else %}
+                                        <form method="POST" action="/admin/ban/{{ u.id }}" style="display:inline"><button type="submit" class="btn btn-danger btn-sm">Бан</button></form>
+                                    {% endif %}
+                                    {% if u.hwid_banned %}
+                                        <form method="POST" action="/admin/hwid_unban/{{ u.id }}" style="display:inline"><button type="submit" class="btn btn-warning btn-sm">HWID разбан</button></form>
+                                    {% else %}
+                                        <form method="POST" action="/admin/hwid_ban/{{ u.id }}" style="display:inline"><button type="submit" class="btn btn-danger btn-sm">HWID бан</button></form>
+                                    {% endif %}
+                                    <form method="POST" action="/admin/setadmin/{{ u.id }}" style="display:inline"><button type="submit" class="btn btn-warning btn-sm">{{ 'Снять админа' if u.is_admin else 'Выдать админа' }}</button></form>
+                                    <form method="POST" action="/admin/delete/{{ u.id }}" style="display:inline"><button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Удалить пользователя?')">Удалить</button></form>
+                                {% else %}
+                                    <span class="text-muted">Это вы</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="admin-upload">
+            <h3>Файл лоадера</h3>
+            <div class="upload-status">
+                {% if has_file %}
+                    <span class="badge badge-success">Загружен</span>
+                {% else %}
+                    <span class="badge badge-danger">Не загружен</span>
+                {% endif %}
+            </div>
+            <form method="POST" action="/admin/upload" enctype="multipart/form-data" class="upload-form">
+                <input type="file" name="file" accept=".exe">
+                <button type="submit" class="btn btn-primary btn-sm">Загрузить</button>
+            </form>
+            {% if has_file %}
+                <div style="margin-top:12px">
+                    <form method="POST" action="/admin/delete-file" style="display:inline">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Удалить файл лоадера?')">Удалить файл</button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

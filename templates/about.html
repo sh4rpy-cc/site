@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}О проекте — liratine.tg{% endblock %}
+{% block content %}
+<section class="page-section">
+    <div class="about-content">
+        <h1 class="page-title">О проекте</h1>
+
+        <div class="about-block">
+            <h2>Что такое liratine.tg?</h2>
+            <p>liratine.tg — это высококачественный лоадер для Counter-Strike 2, разработанный для стабильной и безопасной работы. Мы предоставляем регулярные обновления, быструю поддержку и надёжную систему защиты.</p>
+        </div>
+
+        <div class="about-block">
+            <h2>Методы загрузки</h2>
+            <div class="methods-grid">
+                <div class="method-card">
+                    <h3>Manual Map</h3>
+                    <p>Ручная маппинг DLL в память процесса. Полностью обходит стандартные механизмы загрузки.</p>
+                    <span class="method-badge">Стандарт</span>
+                </div>
+                <div class="method-card">
+                    <h3>LdrLoadDll</h3>
+                    <p>Загрузка через нативные функции Windows. Более глубокая интеграция с системой.</p>
+                    <span class="method-badge advanced">Продвинутый</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-block">
+            <h2>Защита</h2>
+            <div class="security-grid">
+                <div class="security-item">
+                    <h3>HWID Привязка</h3>
+                    <p>Аккаунт привязан к железу компьютера</p>
+                </div>
+                <div class="security-item">
+                    <h3>Шифрование</h3>
+                    <p>Все данные передаются по защищённому каналу</p>
+                </div>
+                <div class="security-item">
+                    <h3>Инвайт-система</h3>
+                    <p>Регистрация только по инвайт-коду</p>
+                </div>
+                <div class="security-item">
+                    <h3>Бан-система</h3>
+                    <p>Мгновенная блокировка нарушителей</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-block">
+            <h2>Технологии</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <span class="tech-name">C++</span>
+                    <span class="tech-desc">Ядро лоадера</span>
+                </div>
+                <div class="tech-item">
+                    <span class="tech-name">Python</span>
+                    <span class="tech-desc">Серверная часть</span>
+                </div>
+                <div class="tech-item">
+                    <span class="tech-name">SQLite</span>
+                    <span class="tech-desc">База данных</span>
+                </div>
+                <div class="tech-item">
+                    <span class="tech-name">Flask</span>
+                    <span class="tech-desc">Веб-интерфейс</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-block disclaimer">
+            <h2>Дисклеймер</h2>
+            <p>Данный проект создан исключительно в образовательных целях. Авторы не несут ответственности за любые последствия использования данного ПО. Используйте на свой страх и риск.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

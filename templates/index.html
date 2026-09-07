@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}liratine.tg{% endblock %}
+{% block content %}
+<section class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+        <div class="hero-badge">CS2 LOADER</div>
+        <h1 class="hero-title">LIRISENSE</h1>
+        <p class="hero-subtitle">Надёжный и быстрообновляемый лоадер для Counter-Strike 2. Безопасность, стабильность, регулярные обновления.</p>
+        <div class="hero-buttons">
+            {% if current_user.is_authenticated %}
+                <a href="/download" class="btn btn-primary">Скачать</a>
+                <a href="/profile" class="btn btn-outline">Профиль</a>
+            {% else %}
+                <a href="/register" class="btn btn-primary">Начать</a>
+                <a href="/about" class="btn btn-outline">Узнать больше</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="features">
+    <h2 class="section-title">Возможности</h2>
+    <p class="section-subtitle">Всё что нужно для комфортной игры</p>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Быстрая загрузка</h3>
+            <p>Мгновенная инжекция без задержек и лагов</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🔄</div>
+            <h3>Обновления</h3>
+            <p>Регулярные обновления в течение 24ч после патча</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <h3>Безопасность</h3>
+            <p>HWID привязка и защищённая авторизация</p>
+        </div>
+    </div>
+</section>
+
+<section class="stats-section">
+    <div class="stats-row">
+        <div class="stat-item">
+            <span class="stat-number">99.9%</span>
+            <span class="stat-text">Аптайм</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">24ч</span>
+            <span class="stat-text">Обновления</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">24/7</span>
+            <span class="stat-text">Поддержка</span>
+        </div>
+    </div>
+</section>
+{% endblock %}

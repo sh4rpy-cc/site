@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Профиль — liratine.tg{% endblock %}
+{% block content %}
+<section class="page-section">
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="profile-avatar">{{ user.login[0]|upper }}</div>
+            <div class="profile-info">
+                <h2>{{ user.login }}</h2>
+                <span class="profile-role {{ 'role-admin' if user.is_admin else 'role-user' }}">
+                    {{ 'Администратор' if user.is_admin else 'Пользователь' }}
+                </span>
+            </div>
+        </div>
+
+        <div class="profile-details">
+            <div class="detail-row">
+                <span class="detail-label">Статус</span>
+                <span class="detail-value {{ 'status-banned' if user.is_banned else 'status-active' }}">
+                    {{ 'Заблокирован' if user.is_banned else 'Активен' }}
+                </span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Подписка</span>
+                {% if user.is_admin %}
+                    <span class="detail-value" style="color:#a78bfa">Бессрочно (Admin)</span>
+                {% elif user.subscription_expires %}
+                    {% if user.has_active_subscription() %}
+                        <span class="detail-value" style="color:#34d399">Активна до {{ user.subscription_expires.strftime('%d.%m.%Y') }} ({{ user.subscription_days_left() }} дней)</span>
+                    {% else %}
+                        <span class="detail-value" style="color:#f87171">Истекла {{ user.subscription_expires.strftime('%d.%m.%Y') }}</span>
+                    {% endif %}
+                {% else %}
+                    <span class="detail-value" style="color:#fbbf24">Нет подписки</span>
+                {% endif %}
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">HWID</span>
+                <span class="detail-value detail-small">{{ user.hwid or 'Не привязан' }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Регистрация</span>
+                <span class="detail-value">{{ user.created_at.strftime('%d.%m.%Y') if user.created_at else '—' }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Последний вход</span>
+                <span class="detail-value">{{ user.last_login.strftime('%d.%m.%Y %H:%M') if user.last_login else '—' }}</span>
+            </div>
+        </div>
+
+        <div class="profile-actions">
+            <a href="/download" class="btn btn-primary">Скачать</a>
+            <a href="/logout" class="btn btn-outline">Выход</a>
+        </div>
+
+        <div class="invites-section">
+            <div class="invites-header">
+                <h3>Активация ключа</h3>
+            </div>
+            <form method="POST" action="/profile/key/activate" style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;align-items:center">
+                <input type="text" name="key" placeholder="LIR-XXXX-XXXX-XXXX" required
+                    style="flex:1;min-width:200px;padding:10px 14px;background:var(--bg-hover);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-family:inherit;text-transform:uppercase">
+                <button type="submit" class="btn btn-primary">Активировать</button>
+            </form>
+
+            {% if keys %}
+            <div class="invite-list">
+                {% for lk in keys %}
+                <div class="invite-item">
+                    <div>
+                        <div class="invite-code">{{ lk.key }}</div>
+                        <div class="invite-meta">{{ lk.days }} дн. | {{ lk.created_at.strftime('%d.%m.%Y %H:%M') }}</div>
+                    </div>
+                    {% if lk.is_used %}
+                        <span class="invite-status invite-used">Активирован</span>
+                    {% else %}
+                        <span class="invite-status invite-free">Не активирован</span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="invite-empty">У вас пока нет ключей</p>
+            {% endif %}
+        </div>
+
+        <div class="invites-section">
+            <div class="invites-header">
+                <h3>Мои инвайт-коды</h3>
+                <form method="POST" action="/profile/invite/generate" style="margin:0">
+                    <button type="submit" class="btn btn-primary btn-sm">+ Создать</button>
+                </form>
+            </div>
+
+            {% if invites %}
+            <div class="invite-list">
+                {% for inv in invites %}
+                <div class="invite-item">
+                    <div>
+                        <div class="invite-code">{{ inv.code }}</div>
+                        <div class="invite-meta">{{ inv.created_at.strftime('%d.%m.%Y %H:%M') }}</div>
+                    </div>
+                    {% if inv.used_by %}
+                        <span class="invite-status invite-used">Использован</span>
+                    {% else %}
+                        <div style="display:flex;gap:6px;align-items:center">
+                            <span class="invite-status invite-free">Свободен</span>
+                            <form method="POST" action="/profile/invite/delete/{{ inv.id }}" style="margin:0">
+                                <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="invite-empty">У вас пока нет инвайт-кодов</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
